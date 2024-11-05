@@ -19,6 +19,8 @@ class __Settings(BaseSettings):
         return "sqlite:///database.db"
 
     TESTING: bool = False
+    PASSWORD_SMTP: str
+    EMAIL_SMTP: str
 
 
 @lru_cache()
