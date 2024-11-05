@@ -7,6 +7,8 @@ from sqlalchemy import pool
 from app.config import settings
 from app.database import Base
 from models import test_model, auth_code, level, user
+from models import place, type_of_place, address, type_of_beer, m2m_place_beer, beer
+
 
 config = context.config
 
