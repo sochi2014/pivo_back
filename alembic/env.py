@@ -7,6 +7,8 @@ from sqlalchemy import pool
 from app.config import settings
 from app.database import Base
 from models import test_model
+from models import places, type_of_place, address
+
 
 config = context.config
 
