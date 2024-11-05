@@ -8,7 +8,8 @@ class __Settings(BaseSettings):
     """
     Application settings loaded from .env
     """
-    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8', validate_assignment=True)
+    model_config = SettingsConfigDict(
+        env_file='.env', env_file_encoding='utf-8', validate_assignment=True)
 
     @computed_field
     @property
@@ -19,6 +20,12 @@ class __Settings(BaseSettings):
         return "sqlite:///database.db"
 
     TESTING: bool = False
+    PASSWORD_SMTP: str
+    EMAIL_SMTP: str
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
 
 @lru_cache()
