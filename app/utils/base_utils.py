@@ -1,8 +1,10 @@
 import smtplib
+import datetime
+from sqlalchemy.orm import Session
+from models.user import User
 from app.config import settings
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
 
 
 def send_email(to_email: str, code: str):
@@ -29,3 +31,9 @@ def send_email(to_email: str, code: str):
         print("Email sent successfully!")
     except Exception as e:
         print(f"Failed to send email: {e}")
+
+
+def get_user_by_email(email: str, db: Session) -> User:
+    user = db.query(User).filter(User.email == email).first()
+    print(user)
+    return user

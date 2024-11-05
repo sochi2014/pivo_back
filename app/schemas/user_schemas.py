@@ -10,4 +10,4 @@ class RegistrationSchema(BaseModel):
 
 class AuthCodeSchema(BaseModel):
     email: EmailStr
-    code: str
+    code: Optional[str] = None

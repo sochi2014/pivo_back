@@ -1,13 +1,14 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import Depends, status, APIRouter
 from sqlalchemy.orm import Session
 from app.schemas.user_schemas import AuthCodeSchema, RegistrationSchema
-from app.crud.auth_crud import get_user_by_email, create_user
-from app.crud.code_generation import verify_auth_code, generate_auth_code
-from models.user import User
+from app.dependencies import get_db
 from models.auth_code import AuthCode
-from app.database import SessionLocal
 from fastapi.responses import JSONResponse
-from app.utils import send_email
+from app.utils.base_utils import send_email, get_user_by_email
+from app.utils.auth_utils import (verify_auth_code_and_generate_tokens,
+                                  send_auth_code, generate_auth_code)
+from app.crud.token_crud import revoke_refresh_token, verify_refresh_token
+from pydantic import ValidationError
 import datetime
 import pathlib
 
@@ -20,20 +21,18 @@ router = APIRouter(
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register_user(data: RegistrationSchema):
-    user = get_user_by_email(data.email)
-    if not user:
-        user = create_user(
-            email=data.email,
-            username=data.username,
-            avatar_url=data.avatar_url
+async def register_user(data: RegistrationSchema, db: Session = Depends(get_db)):
+    user = get_user_by_email(data.email, db)
+    if user:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content="User with this email already exists."
         )
 
     code = generate_auth_code()
     expires_at = datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
 
     auth_code = AuthCode(user_id=user.id, code=code, expires_at=expires_at)
-    db: Session = SessionLocal()
     db.add(auth_code)
     db.commit()
 
@@ -41,35 +40,39 @@ async def register_user(data: RegistrationSchema):
 
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
-        content={"message": "Code was send email."}
+        content={
+            "message": "Code has been sent to your email. Please check your inbox and use the code to complete your registration."
+        }
     )
 
 
 @router.post("/authorize", status_code=status.HTTP_200_OK)
-async def authorize_user(auth_data: AuthCodeSchema):
-    if not verify_auth_code(auth_data.email, auth_data.code):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid or expired code."
-        )
-
-    db: Session = SessionLocal()
-    user = db.query(User).filter(User.email == auth_data.email).first()
-    db.close()
-
+async def authorize_user(auth_data: AuthCodeSchema, db: Session = Depends(get_db)):
+    user = get_user_by_email(auth_data.email, db)
     if not user:
-        raise HTTPException(
+        return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found."
+            content="User not found"
         )
+    if not auth_data.code:
+        return send_auth_code(user, db)
+    return verify_auth_code_and_generate_tokens(user, auth_data.code, db)
 
+
+@router.post("/verify-refresh-token", status_code=status.HTTP_200_OK)
+async def verify_token_endpoint(token: str, db: Session = Depends(get_db)):
+    refresh_token = verify_refresh_token(token, db)
     return JSONResponse(
         status_code=status.HTTP_200_OK,
-        content={
-            "id": user.id_user,
-            "email": user.email,
-            "username": user.username,
-            "registered_at": user.register_at.isoformat(),
-            "message": "User authorized successfully."
-        }
+        content={"message": "Refresh token is valid",
+                 "user_id": refresh_token.user_id}
+    )
+
+
+@router.post("/revoke-refresh-token", status_code=status.HTTP_200_OK)
+async def revoke_token_endpoint(token: str, db: Session = Depends(get_db)):
+    result = revoke_refresh_token(token, db)
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content=result
     )
