@@ -16,9 +16,9 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=PlaceOut)
-def create_place_route(place: PlaceCreate, db: Session = Depends(get_db)):
-    return create_place(db=db, place=place)
+# @router.post("/", response_model=PlaceOut)
+# def create_place_route(place: PlaceCreate, db: Session = Depends(get_db)):
+#     return create_place(db=db, place=place)
 
 
 @router.get("/filter", response_model=List[PlaceOut])

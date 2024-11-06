@@ -4,8 +4,9 @@ from typing import Optional
 
 class RegistrationSchema(BaseModel):
     email: EmailStr
-    username: Optional[str] = None
+    username: str
     avatar_url: Optional[str] = None
+    phone_number: Optional[str] = None
 
 
 class AuthCodeSchema(BaseModel):

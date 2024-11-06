@@ -1,4 +1,4 @@
-from fastapi import Depends, status, APIRouter
+from fastapi import Depends, status, APIRouter, HTTPException
 from sqlalchemy.orm import Session
 from app.schemas.auth_scheme import AuthCodeSchema, RegistrationSchema
 from app.dependencies import get_db
@@ -23,6 +23,11 @@ router = APIRouter(
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register_user(data: RegistrationSchema, db: Session = Depends(get_db)):
+    if not data.email or not data.username:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Both email and username are required."
+        )
     user = get_user_by_email(data.email, db)
     if user:
         return JSONResponse(
@@ -32,6 +37,8 @@ async def register_user(data: RegistrationSchema, db: Session = Depends(get_db))
     new_user = User(
         email=data.email,
         username=data.username,
+        phone_number=data.phone_number if data.phone_number else None,
+        level_id=1,
         register_at=datetime.datetime.utcnow()
     )
     db.add(new_user)
@@ -90,11 +97,13 @@ async def revoke_token_endpoint(token: str, db: Session = Depends(get_db)):
         content=result
     )
 
+
 @router.post("/refresh_access_token", status_code=status.HTTP_200_OK)
 async def refresh_access_endpoint(refresh_token: str, db: Session = Depends(get_db)):
     verified_token = verify_refresh_token(refresh_token, db)
-    new_access_token = create_access_token(data={"sub": verified_token.user_id})
-    
+    new_access_token = create_access_token(
+        data={"sub": verified_token.user_id})
+
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={"access_token": new_access_token}
