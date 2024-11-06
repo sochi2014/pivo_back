@@ -13,3 +13,5 @@ services:
       - npm_default
     ports:
       - "8900:8000"
+    volumes:
+      - ./database.db:/app/database.db
