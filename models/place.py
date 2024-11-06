@@ -14,6 +14,5 @@ class Place(Base):
 
     address = relationship('Address')
     type_place = relationship('TypeOfPlace')
-    beers = relationship('Beer', secondary='beers_places', back_populates='places')
     feedbacks = relationship('Feedback', back_populates='place')
     photos = relationship('Photo', back_populates='place')
