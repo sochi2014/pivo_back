@@ -1,9 +1,12 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from app.dependencies import get_db
 from app.crud.user_crud import get_current_user, update_current_user
 from app.schemas.user_scheme import UserUpdate, UserOut
+from typing import Annotated
 import pathlib
+
 _path_file = pathlib.Path(__file__)
 PREFIX = f'/{_path_file.parent.parent.name}/{_path_file.parent.name}/{_path_file.stem}'
 
@@ -11,9 +14,11 @@ router = APIRouter(
     prefix=PREFIX
 )
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 @router.get("/me", response_model=UserOut)
-def get_me(token: str, db: Session = Depends(get_db)):
+def get_me(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):
     """
     Получает данные текущего аутентифицированного пользователя.
     """
@@ -29,7 +34,7 @@ def get_me(token: str, db: Session = Depends(get_db)):
 @router.put("/me", response_model=UserOut)
 def update_me(
     user_update: UserUpdate,
-    token: str,
+    token: Annotated[str, Depends(oauth2_scheme)],
     db: Session = Depends(get_db)
 ):
     """
@@ -43,6 +48,7 @@ def update_me(
         )
 
     updated_user = update_current_user(
-        db=db, user=current_user, user_update=user_update)
+        db=db, user=current_user, user_update=user_update
+    )
 
     return updated_user
