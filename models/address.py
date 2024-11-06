@@ -14,5 +14,4 @@ class Address(Base):
     city = Column(String(255), index=True)
     street = Column(String(255), index=True)
     house = Column(String(20), index=True)
-
     places = relationship('Place', back_populates='address')

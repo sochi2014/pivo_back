@@ -1,6 +1,6 @@
 from fastapi import Depends, status, APIRouter
 from sqlalchemy.orm import Session
-from app.schemas.auth_sheme import AuthCodeSchema, RegistrationSchema
+from app.schemas.auth_scheme import AuthCodeSchema, RegistrationSchema
 from app.dependencies import get_db
 from models.auth_code import AuthCode
 from models.user import User
