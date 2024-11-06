@@ -5,6 +5,7 @@ from app.dependencies import get_db
 from app.crud.token_crud import decode_access_token
 from app.schemas.user_scheme import UserUpdate
 
+
 def create_user(email: str, username: str = None, avatar_url: str = None, db: Session = Depends(get_db)) -> User:
     new_user = User(
         email=email,

@@ -67,7 +67,6 @@ def decode_access_token(token: str):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY,
                              algorithms=[settings.ALGORITHM])
-        print(payload)
         user_id: int = payload.get("sub")
         if user_id is None:
             raise HTTPException(

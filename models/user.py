@@ -17,7 +17,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     level_id = Column(Integer, ForeignKey(
         "levels.id"), nullable=False, default=1)
-    username = Column(String, unique=False, index=False)
+    username = Column(String, unique=False, index=False, nullable=False)
     email = Column(String, unique=True, index=True)
     avatar_url = Column(String, nullable=True)
     register_at = Column(DateTime, default=datetime.datetime.utcnow)
