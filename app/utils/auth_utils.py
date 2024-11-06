@@ -72,3 +72,5 @@ def verify_auth_code_and_generate_tokens(user: User, code: str, db: Session):
         },
         "message": "User successfully authorized."
     }
+
+

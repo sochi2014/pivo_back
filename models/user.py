@@ -13,7 +13,6 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     avatar_url = Column(String, nullable=True)
     register_at = Column(DateTime, default=datetime.datetime.utcnow)
-
     level = relationship("Level", back_populates="users")
     auth_codes = relationship("AuthCode", back_populates="user")
     refresh_tokens = relationship("RefreshToken", back_populates="user", cascade="all, delete-orphan")

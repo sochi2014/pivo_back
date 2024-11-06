@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.schemas.user_schemas import AuthCodeSchema, RegistrationSchema
 from app.dependencies import get_db
 from models.auth_code import AuthCode
+from models.user import User
 from fastapi.responses import JSONResponse
 from app.utils.base_utils import send_email, get_user_by_email
 from app.utils.auth_utils import (verify_auth_code_and_generate_tokens,
@@ -28,11 +29,23 @@ async def register_user(data: RegistrationSchema, db: Session = Depends(get_db))
             status_code=status.HTTP_400_BAD_REQUEST,
             content="User with this email already exists."
         )
+    new_user = User(
+        email=data.email,
+        username=data.username,
+        register_at=datetime.datetime.utcnow()
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
 
     code = generate_auth_code()
     expires_at = datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
 
-    auth_code = AuthCode(user_id=user.id, code=code, expires_at=expires_at)
+    auth_code = AuthCode(
+        code=code,
+        expires_at=expires_at,
+        user_id=new_user.id
+    )
     db.add(auth_code)
     db.commit()
 
