@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from app.utils.base_utils import send_email, get_user_by_email
 from app.utils.auth_utils import (verify_auth_code_and_generate_tokens,
                                   send_auth_code, generate_auth_code)
-from app.crud.token_crud import revoke_refresh_token, verify_refresh_token
+from app.crud.token_crud import revoke_refresh_token, verify_refresh_token, create_access_token
 from pydantic import ValidationError
 import datetime
 import pathlib
@@ -88,4 +88,14 @@ async def revoke_token_endpoint(token: str, db: Session = Depends(get_db)):
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content=result
+    )
+
+@router.post("/refresh_access_token", status_code=status.HTTP_200_OK)
+async def refresh_access_endpoint(refresh_token: str, db: Session = Depends(get_db)):
+    verified_token = verify_refresh_token(refresh_token, db)
+    new_access_token = create_access_token(data={"sub": verified_token.user_id})
+    
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"access_token": new_access_token}
     )
