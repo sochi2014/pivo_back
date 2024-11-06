@@ -21,7 +21,7 @@ def create_place_route(place: PlaceCreate, db: Session = Depends(get_db)):
     return create_place(db=db, place=place)
 
 
-@router.get("/places", response_model=List[PlaceOut])
+@router.get("/filter", response_model=List[PlaceOut])
 def read_all_places(
     skip: int = 0,
     limit: int = 10,
@@ -50,6 +50,28 @@ def read_all_places(
             address=AddressOut.from_orm(
                 place.address) if place.address else None
         ) for place in places
+    ]
+
+
+@router.get("/", response_model=List[PlaceOut])
+def read_places(offset: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+    query = db.query(Place).offset(offset).limit(limit)
+
+    places = query.all()
+
+    if not places:
+        raise HTTPException(status_code=404, detail="No places found")
+
+    return [
+        PlaceOut(
+            id=place.id,
+            name=place.name,
+            type_place_id=place.type_place_id,
+            phone_number=place.phone_number,
+            address=AddressOut.from_orm(
+                place.address) if place.address else None
+        )
+        for place in places
     ]
 
 
