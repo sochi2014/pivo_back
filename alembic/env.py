@@ -9,7 +9,7 @@ from app.database import Base
 
 from models import place, type_of_place, address, type_of_beer, m2m_place_beer, beer
 from models import test_model, auth_code, level, user
-from models import beer_color
+from models import beer_color, feedback, photo
 
 
 config = context.config

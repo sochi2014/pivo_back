@@ -24,3 +24,5 @@ class Beer(Base):
     type = relationship('TypeOfBeer')
     color = relationship('BeerColor')
     places = relationship('Place', secondary='beers_places', back_populates='beers')
+    feedbacks = relationship('Feedback', back_populates='beer')
+    photos = relationship('Photo', back_populates='beer')

@@ -25,6 +25,7 @@ class User(Base):
     level = relationship("Level", back_populates="users")
     auth_codes = relationship("AuthCode", back_populates="user")
     refresh_tokens = relationship("RefreshToken", back_populates="user", cascade="all, delete-orphan")
+    feedbacks = relationship('Feedback', back_populates='user')
     friends = relationship(
         'User',
         secondary=user_friends,
