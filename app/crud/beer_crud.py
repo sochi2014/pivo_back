@@ -17,6 +17,8 @@ def get_filtered_beers(
     db: Session,
     type: Optional[str] = None,
     color: Optional[str] = None,
+    brand: Optional[str] = None,
+    name: Optional[str] = None,
     min_alc_degree: Optional[float] = None,
     max_alc_degree: Optional[float] = None,
     min_ibu: Optional[int] = None,
@@ -33,6 +35,10 @@ def get_filtered_beers(
         query = query.join(Beer.type).filter(Beer.type.has(name=type))
     if color:
         query = query.join(Beer.color).filter(Beer.color.has(name=color))
+    if brand:
+        query = query.filter(Beer.brand.ilike(f"%{brand}%"))
+    if name:
+        query = query.filter(Beer.name.ilike(f"%{name}%"))
     if min_alc_degree is not None:
         query = query.filter(Beer.alc_degree >= min_alc_degree)
     if max_alc_degree is not None:
