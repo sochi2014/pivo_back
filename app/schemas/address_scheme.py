@@ -1,6 +1,7 @@
 from pydantic import BaseModel, condecimal
 from typing import Optional
 
+
 class AddressOut(BaseModel):
     id: int
     latitude: condecimal(max_digits=10, decimal_places=7)
