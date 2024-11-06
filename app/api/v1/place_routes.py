@@ -90,8 +90,8 @@ def read_places(offset: int = 0, limit: int = 10, db: Session = Depends(get_db))
 def read_place(place_id: int, db: Session = Depends(get_db)):
     place = db.query(Place).filter(Place.id == place_id).first()
     if place is None:
-        raise HTTPException(status_code=404, detail=f"Place with id {
-                            place_id} not found")
+        raise HTTPException(status_code=404,
+                            detail=f"Place with id {place_id} not found")
 
     return PlaceOut(
         id=place.id,
