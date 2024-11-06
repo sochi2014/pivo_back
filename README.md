@@ -58,3 +58,5 @@ python -m fastapi run
 ```
 http://127.0.0.1:8000/docs
 ```
+
+PS. [API](https://api.secondmansite.ru/docs) доступно
