@@ -15,6 +15,7 @@ router = APIRouter(
 
 
 def convert_address_to_addressout(address: Address) -> AddressOut:
+    place_id = address.places[0].id if address.places else None
     return AddressOut(
         id=address.id,
         latitude=address.latitude,
@@ -22,7 +23,8 @@ def convert_address_to_addressout(address: Address) -> AddressOut:
         country=address.country,
         city=address.city,
         street=address.street,
-        house=address.house
+        house=address.house,
+        place_id=place_id
     )
 
 
@@ -51,7 +53,8 @@ def filter_addresses(
 
     if not addresses:
         raise HTTPException(
-            status_code=404, detail="No addresses found with the given filters")
+            status_code=404, detail="No addresses found with the given filters"
+        )
 
     return [convert_address_to_addressout(address) for address in addresses]
 
@@ -68,7 +71,8 @@ def read_addresses(offset: int = 0, limit: int = 10, db: Session = Depends(get_d
 def read_address(address_id: int, db: Session = Depends(get_db)):
     address = db.query(Address).filter(Address.id == address_id).first()
     if address is None:
-        raise HTTPException(status_code=404, detail=f"Address with id {
-                            address_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Address with id {address_id} not found"
+        )
 
     return convert_address_to_addressout(address)

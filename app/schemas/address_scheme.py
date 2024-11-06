@@ -1,5 +1,5 @@
 from pydantic import BaseModel, condecimal
-
+from typing import Optional
 
 class AddressOut(BaseModel):
     id: int
@@ -9,6 +9,7 @@ class AddressOut(BaseModel):
     city: str
     street: str
     house: str
+    place_id: Optional[int] = None
 
     class Config:
         orm_mode = True

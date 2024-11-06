@@ -6,7 +6,6 @@ from models.place import Place
 from models.type_of_place import TypeOfPlace
 from models.address import Address
 from models.type_of_beer import TypeOfBeer
-from models.m2m_place_beer import beers_places
 from models.beer import Beer
 from models.beer_color import BeerColor
 from models.test_model import TestModel
