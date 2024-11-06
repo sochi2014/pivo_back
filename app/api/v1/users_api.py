@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.get("/users/me", response_model=UserOut)
+@router.get("/me", response_model=UserOut)
 def get_me(token: str, db: Session = Depends(get_db)):
     """
     Получает данные текущего аутентифицированного пользователя.
@@ -26,7 +26,7 @@ def get_me(token: str, db: Session = Depends(get_db)):
     return user
 
 
-@router.put("/users/me", response_model=UserOut)
+@router.put("/me", response_model=UserOut)
 def update_me(
     user_update: UserUpdate,
     token: str,
