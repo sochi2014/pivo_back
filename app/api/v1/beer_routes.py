@@ -39,6 +39,8 @@ def convert_beer_to_beerout(beer: Beer, db: Session) -> BeerOut:
 def filter_beers(
         type: Optional[str] = None,
         color: Optional[str] = None,
+        brand: Optional[str] = None,
+        name: Optional[str] = None,
         min_alc_degree: Optional[float] = Query(None, alias="min_alc"),
         max_alc_degree: Optional[float] = Query(None, alias="max_alc"),
         min_ibu: Optional[int] = None,
@@ -55,6 +57,8 @@ def filter_beers(
         db=db,
         type=type,
         color=color,
+        brand=brand,
+        name=name,
         min_alc_degree=min_alc_degree,
         max_alc_degree=max_alc_degree,
         min_ibu=min_ibu,
