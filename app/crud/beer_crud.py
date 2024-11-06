@@ -4,14 +4,38 @@ from typing import List, Optional, Tuple, Union, Dict, Any
 
 from models.beer import Beer
 from app.dependencies import get_db
+from sqlalchemy import asc, desc
 
 
 def get_beer(beer_id: int, db: Session = Depends(get_db)) -> Optional[Beer]:
     return db.query(Beer).filter(Beer.id == beer_id).first()
 
 
-def get_all_beers(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)) -> List[Beer]:
-    return db.query(Beer).offset(skip).limit(limit).all()
+def get_all_beers(
+    skip: int = 0,
+    limit: int = 10,
+    db: Session = Depends(get_db),
+    sort_by: Optional[str] = None,
+    order: str = 'asc'
+) -> List[Beer]:
+    query = db.query(Beer)
+
+    if sort_by:
+        valid_sort_fields = ['rating', 'name', 'alc_degree']
+        if sort_by not in valid_sort_fields:
+            raise HTTPException(
+                status_code=400, detail="Invalid sort_by value")
+
+        column = getattr(Beer, sort_by)
+        if order == 'asc':
+            query = query.order_by(asc(column))
+        elif order == 'desc':
+            query = query.order_by(desc(column))
+        else:
+            raise HTTPException(status_code=400, detail="Invalid order value")
+
+    return query.offset(skip).limit(limit).all()
+
 
 def get_filtered_beers(
     db: Session,

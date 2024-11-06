@@ -16,8 +16,11 @@ router = APIRouter(
 
 
 def convert_beer_to_beerout(beer: Beer, db: Session) -> BeerOut:
-    type_name = db.query(TypeOfBeer.name).filter(TypeOfBeer.id == beer.type_id).scalar()
-    color_name = db.query(BeerColor.name).filter(BeerColor.id == beer.color_id).scalar() if beer.color_id else None
+    type_name = db.query(TypeOfBeer.name).filter(
+        TypeOfBeer.id == beer.type_id).scalar()
+
+    color_name = db.query(BeerColor.name).filter(
+        BeerColor.id == beer.color_id).scalar() if beer.color_id else None
 
     return BeerOut(
         id=beer.id,
@@ -71,16 +74,26 @@ def filter_beers(
         limit=limit
     )
     if not beers:
-        raise HTTPException(status_code=404, detail="No beers found with the given filters")
+        raise HTTPException(
+            status_code=404, detail="No beers found with the given filters")
 
     return [convert_beer_to_beerout(beer, db) for beer in beers]
 
 
 @router.get("", response_model=List[BeerOut])
-def read_beers(offset: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    beers = get_all_beers(skip=offset, limit=limit, db=db)
+def read_beers(
+    offset: int = 0,
+    limit: int = 10,
+    sort_by: Optional[str] = None,
+    order: str = 'asc',
+    db: Session = Depends(get_db)
+):
+    beers = get_all_beers(skip=offset, limit=limit, db=db,
+                          sort_by=sort_by, order=order)
+
     if not beers:
-        raise HTTPException(status_code=404, detail="No beers??")
+        raise HTTPException(status_code=404, detail="No beers found")
+
     return [convert_beer_to_beerout(beer, db) for beer in beers]
 
 
@@ -88,7 +101,7 @@ def read_beers(offset: int = 0, limit: int = 10, db: Session = Depends(get_db)):
 def read_beer(beer_id: int, db: Session = Depends(get_db)):
     beer = db.query(Beer).filter(Beer.id == beer_id).first()
     if beer is None:
-        raise HTTPException(status_code=404, detail=f"Beer with id {beer_id} not found")
+        raise HTTPException(status_code=404, detail=f"Beer with id {
+                            beer_id} not found")
 
     return convert_beer_to_beerout(beer, db)
-
