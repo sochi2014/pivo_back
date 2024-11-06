@@ -20,7 +20,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 @router.get("/me", response_model=UserReturnSchema)
-def get_me(token: str, db: Session = Depends(get_db)):
+def get_me(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):
     """
     Получает данные текущего аутентифицированного пользователя.
     """
@@ -36,7 +36,7 @@ def get_me(token: str, db: Session = Depends(get_db)):
 @router.put("/me", response_model=UserReturnSchema)
 def update_me(
     user_update: UserUpdate,
-    token: str,
+    token: Annotated[str, Depends(oauth2_scheme)],
     db: Session = Depends(get_db),
 ):
     """
