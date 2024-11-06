@@ -19,7 +19,7 @@ class Beer(Base):
     barrel_aged = Column(Boolean, default=False)  # Выдержка BA
 
     type_id = Column(Integer, ForeignKey('type_of_beers.id'), nullable=False)
-    color_id = Column(Integer, ForeignKey('colors.id'), nullable=True)
+    color_id = Column(Integer, ForeignKey('beer_colors.id'), nullable=True)
 
     type = relationship('TypeOfBeer')
     color = relationship('BeerColor')
