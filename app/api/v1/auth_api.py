@@ -1,15 +1,15 @@
 from fastapi import Depends, status, APIRouter
 from sqlalchemy.orm import Session
-from app.schemas.user_schemas import AuthCodeSchema, RegistrationSchema
+from app.schemas.auth_sheme import AuthCodeSchema, RegistrationSchema
 from app.dependencies import get_db
 from models.auth_code import AuthCode
 from models.user import User
 from fastapi.responses import JSONResponse
-from app.utils.base_utils import send_email, get_user_by_email
+from app.utils.base_utils import send_email
 from app.utils.auth_utils import (verify_auth_code_and_generate_tokens,
                                   send_auth_code, generate_auth_code)
 from app.crud.token_crud import revoke_refresh_token, verify_refresh_token, create_access_token
-from pydantic import ValidationError
+from app.crud.user_crud import get_user_by_email
 import datetime
 import pathlib
 
