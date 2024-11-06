@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional, List
-from app.crud.place_crud import create_place, get_place, update_place, delete_place
+from app.crud.place_crud import create_place, get_place
 from app.schemas.place_scheme import PlaceCreate, PlaceUpdate, PlaceOut
 from app.dependencies import get_db
 from models.place import Place
@@ -75,15 +75,15 @@ def read_places(offset: int = 0, limit: int = 10, db: Session = Depends(get_db))
     ]
 
 
-@router.put("/{place_id}", response_model=PlaceOut)
-def update_place_route(place_id: int, place_data: PlaceUpdate, db: Session = Depends(get_db)):
-    return update_place(db=db, place_id=place_id, place_data=place_data)
+# @router.put("/{place_id}", response_model=PlaceOut)
+# def update_place_route(place_id: int, place_data: PlaceUpdate, db: Session = Depends(get_db)):
+#     return update_place(db=db, place_id=place_id, place_data=place_data)
 
 
-@router.delete("/{place_id}", response_model=dict)
-def delete_place_route(place_id: int, db: Session = Depends(get_db)):
-    delete_place(db=db, place_id=place_id)
-    return {"message": "Place deleted"}
+# @router.delete("/{place_id}", response_model=dict)
+# def delete_place_route(place_id: int, db: Session = Depends(get_db)):
+#     delete_place(db=db, place_id=place_id)
+#     return {"message": "Place deleted"}
 
 
 @router.get("/{place_id}", response_model=PlaceOut)

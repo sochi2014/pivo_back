@@ -25,24 +25,24 @@ def get_place(db: Session, place_id: int) -> Place:
     return place
 
 
-def update_place(db: Session, place_id: int, place_data: PlaceUpdate) -> Place:
-    place = get_place(db, place_id)
-    if place_data.name is not None:
-        place.name = place_data.name
-    if place_data.address_id is not None:
-        place.address_id = place_data.address_id
-    if place_data.type_place_id is not None:
-        place.type_place_id = place_data.type_place_id
-    if place_data.phone_number is not None:
-        place.phone_number = place_data.phone_number
+# def update_place(db: Session, place_id: int, place_data: PlaceUpdate) -> Place:
+#     place = get_place(db, place_id)
+#     if place_data.name is not None:
+#         place.name = place_data.name
+#     if place_data.address_id is not None:
+#         place.address_id = place_data.address_id
+#     if place_data.type_place_id is not None:
+#         place.type_place_id = place_data.type_place_id
+#     if place_data.phone_number is not None:
+#         place.phone_number = place_data.phone_number
 
-    db.commit()
-    db.refresh(place)
-    return place
+#     db.commit()
+#     db.refresh(place)
+#     return place
 
 
-def delete_place(db: Session, place_id: int) -> Place:
-    place = get_place(db, place_id)
-    db.delete(place)
-    db.commit()
-    return place
+# def delete_place(db: Session, place_id: int) -> Place:
+#     place = get_place(db, place_id)
+#     db.delete(place)
+#     db.commit()
+#     return place
