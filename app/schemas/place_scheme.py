@@ -27,7 +27,7 @@ class PlaceOut(BaseModel):
     phone_number: Optional[str] = None
     address_id: Optional[int] = None
     address: Optional[AddressOut]
+    rating: Optional[int] = None
 
     class Config:
-        orm_mode = True
         from_attributes = True
