@@ -11,6 +11,7 @@ from models.geoposition import Geoposition
 from app.schemas.usergeo_sheme import UserGeoOut
 import pathlib
 import math
+from datetime import datetime, timedelta
 from typing import List
 
 _path_file = pathlib.Path(__file__)
@@ -71,9 +72,9 @@ def delete_geoposition_endpoint(
     if existing_geoposition is None:
         raise HTTPException(status_code=404, detail="Geoposition not found")
 
-    deleted_geoposition = delete_geoposition(db, geopos_id=existing_geoposition.id)
+    deleted_geoposition = delete_geoposition(
+        db, geopos_id=existing_geoposition.id)
     return deleted_geoposition
-
 
 
 @router.get("/users/nearby", response_model=List[UserGeoOut])
@@ -93,9 +94,13 @@ def find_users_nearby(
     min_lon = current_lon - lon_change
     max_lon = current_lon + lon_change
 
+    one_minute_ago = datetime.utcnow() - timedelta(minutes=1)
+    
     users_in_box = db.query(User).join(Geoposition).filter(
         Geoposition.latitude.between(min_lat, max_lat),
-        Geoposition.longitude.between(min_lon, max_lon)
+        Geoposition.longitude.between(min_lon, max_lon),
+        User.phone_number.isnot(None),
+        Geoposition.updated_at >= one_minute_ago
     ).all()
 
     nearby_users = []
@@ -131,8 +136,7 @@ def haversine_formula(lat1: float, lon1: float, lat2: float, lon2: float) -> flo
     :param lon2: Longitude of the second point in decimal degrees
     :return: Distance between the two points in kilometers
     """
-    R = 6371.0  # Radius of the Earth in kilometers
-
+    R = 6371.0
     phi1 = math.radians(lat1)
     phi2 = math.radians(lat2)
     delta_phi = math.radians(lat2 - lat1)

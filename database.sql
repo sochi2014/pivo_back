@@ -61,6 +61,15 @@ CREATE TABLE IF NOT EXISTS "feedbacks" (
 	FOREIGN KEY("user_id") REFERENCES "users"("id"),
 	CONSTRAINT "check_type_feedback" CHECK("type_feedback" IN ('beer', 'place'))
 );
+CREATE TABLE IF NOT EXISTS "geopositions" (
+	"id"	INTEGER NOT NULL,
+	"user_id"	INTEGER NOT NULL,
+	"latitude"	DECIMAL(10, 7) NOT NULL,
+	"longitude"	DECIMAL(10, 7) NOT NULL,
+	"updated_at"	TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+	PRIMARY KEY("id"),
+	FOREIGN KEY("user_id") REFERENCES "users"("id")
+);
 CREATE TABLE IF NOT EXISTS "levels" (
 	"id"	INTEGER NOT NULL,
 	"level_name"	VARCHAR(45) NOT NULL,
@@ -209,7 +218,9 @@ INSERT INTO "addresses" VALUES (72,59.965336,30.290832,'Россия','Санк�
 INSERT INTO "addresses" VALUES (73,59.924375,30.34721,'Россия','Санкт-Петербург','Разъезжая','20');
 INSERT INTO "addresses" VALUES (74,59.927509,30.317683,'Россия','Санкт-Петербург','Сенная площадь','7');
 INSERT INTO "addresses" VALUES (75,60.031598,30.365967,'Россия','Санкт-Петербург','Тихорецкий проспект','43 лит А');
+INSERT INTO "alembic_version" VALUES ('8a6d5c7dcb82');
 INSERT INTO "alembic_version" VALUES ('5307cc9bffea');
+INSERT INTO "beer_colors" VALUES (1,'',NULL,NULL);
 INSERT INTO "beers" VALUES (1,'"Admiral" Stache','Baltic-Style Porter','Milwaukee Brewing Co берет классический европейский стиль. Балтийские портеры — более крепкие лагерные двоюродные братья классического лондонского портера. Более высокая крепость и холодная ферментация помогают создать мягкий, менее фруктовый портер, богатый вкусами и ароматами жареного солода. «Admiral» Stache имеет глубокий коричневый оттенок с легкой карамельной шапкой. Во вкусе доминируют ириски и молочный шоколад с тонкими нотками сухофруктов. Один месяц выдержки в бочках из-под бурбона придал слой ванили и дуба. 
 
 Мы впервые разработали это пиво в 2007 году. Нашей первой попыткой партии пива на 2-й улице был Балтийский портер. То, что мы в итоге получили, стало известно как «Shake Down Nut Brown». Вы можете догадаться, что пошло не так… Но так много всего правильного! С каждым годом пиво становилось немного крепче, по вкусу и алкоголю. 
@@ -8871,6 +8882,40 @@ INSERT INTO "beers" VALUES (5997,'Frostbite Black IPA','American-Style India Pal
 INSERT INTO "beers" VALUES (5998,'Frosted Frog Christmas Ale','Herb and Spice Beer','Суть Рождества заключена в этой бутылке. Идеально смешанные специи дополняют насыщенные солодовые вкусы Frosted Frog, создавая непревзойденное рождественское впечатление. Отпразднуйте праздники, наслаждаясь этим особенным сезонным предложением.','https://brewerydb-images.s3.amazonaws.com/beer/nwJXtw/upload_rDAYEy-medium.png',8.6,5,1.03,1.006,0,16,1);
 INSERT INTO "beers" VALUES (5999,'Frosted Hop Strong Ale','Strong Ale','Изготовленный с использованием домашнего хмеля из Катскиллс, который был собран вручную и затем немедленно заморожен для сохранения свежести, этот вкусный напиток имеет глубокий красный цвет, сложный аромат и приятный фруктовый вкус с нотками клубники и черники. Это большая работа, но определенно стоит усилий!','https://brewerydb-images.s3.amazonaws.com/beer/F2vgtP/upload_ZVTqNa-medium.png',8,30,1.06,1.014,0,16,1);
 INSERT INTO "beers" VALUES (6000,'FrostNipper','American-Style Brown Ale','Наша интерпретация осеннего сезонного пива. Это пиво согнет ваши пальцы ног и вызовет мурашки по коже рук. Прекрасный набор традиционных осенних специй делает его прекрасным дополнением к праздничному сезону... оно сделает все шутки веселыми. Пиво темного цвета... немного темнее коричневого эля. В состав входит сочетание хмеля Perle и Willamette, что обеспечивает контрастную интенсивность с осенними специями. Пиво содержит щедрое количество копченого солода.','https://brewerydb-images.s3.amazonaws.com/beer/79SG11/upload_E8myZm-medium.png',7.2,25,1.04,1.01,0,16,1);
+INSERT INTO "feedbacks" VALUES (1,'qwe',1,1,1,1,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (2,'qwe2',1,1,1,1,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (3,'qwe',1,1,1,1,'place',NULL);
+INSERT INTO "feedbacks" VALUES (4,'qwe',4,1,1,1,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (5,'Отличный вкус!',5,1,2,3,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (6,'Слишком горькое',2,1,3,1,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (7,'Приятный аромат',4,1,4,2,'place',NULL);
+INSERT INTO "feedbacks" VALUES (8,'Мягкое послевкусие',5,1,1,4,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (9,'Насыщенный вкус',3,1,2,5,'place',NULL);
+INSERT INTO "feedbacks" VALUES (10,'Среднее качество',3,1,3,6,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (11,'Могло быть лучше',2,1,4,7,'place',NULL);
+INSERT INTO "feedbacks" VALUES (12,'Идеально для вечеринки',5,1,1,8,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (13,'Не в моем вкусе',2,1,2,9,'place',NULL);
+INSERT INTO "feedbacks" VALUES (14,'Очень освежающее',4,1,3,10,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (15,'Легкое, приятное пиво',4,1,5,11,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (16,'Хорошее место для отдыха',5,1,6,12,'place',NULL);
+INSERT INTO "feedbacks" VALUES (17,'Слишком дорого для такого качества',2,1,7,13,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (18,'Отличный выбор для жаркого дня',5,1,8,14,'place',NULL);
+INSERT INTO "feedbacks" VALUES (19,'Кисловатый привкус',3,1,9,15,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (20,'Неплохое заведение, но шумно',3,1,10,16,'place',NULL);
+INSERT INTO "feedbacks" VALUES (21,'Пиво хорошее, но цена завышена',3,1,11,17,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (22,'Вкусное пиво с нотками цитруса',4,1,12,18,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (23,'Дружелюбный персонал',5,1,13,19,'place',NULL);
+INSERT INTO "feedbacks" VALUES (24,'Среднее качество и сервис',3,1,14,20,'place',NULL);
+INSERT INTO "feedbacks" VALUES (25,'Интересный вкус с легкой горчинкой',4,1,15,21,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (26,'Уютное место, хороший интерьер',5,1,16,22,'place',NULL);
+INSERT INTO "feedbacks" VALUES (27,'Приятное на вкус, рекомендую',4,1,17,23,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (28,'Требует улучшения',2,1,18,24,'place',NULL);
+INSERT INTO "feedbacks" VALUES (29,'Отличное обслуживание и атмосфера',5,1,19,25,'place',NULL);
+INSERT INTO "feedbacks" VALUES (30,'Слишком горькое, не по вкусу',2,1,20,26,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (31,'Заведение для особых случаев',4,1,21,27,'place',NULL);
+INSERT INTO "feedbacks" VALUES (32,'Пиво средней крепости, подходит для вечера',4,1,22,28,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (33,'Чистый, свежий вкус',5,1,23,29,'beer',NULL);
+INSERT INTO "feedbacks" VALUES (34,'Немного суховато',3,1,24,30,'place',NULL);
 INSERT INTO "places" VALUES (1,'Gusti Giusti, ресторан',1,1,NULL);
 INSERT INTO "places" VALUES (2,'Italica, ресторан',2,1,NULL);
 INSERT INTO "places" VALUES (3,'Wine&Dine, авторский бар',3,1,NULL);
@@ -8946,6 +8991,7 @@ INSERT INTO "places" VALUES (72,'Лодейнопольская улица, 8',7
 INSERT INTO "places" VALUES (73,'Umami',73,1,NULL);
 INSERT INTO "places" VALUES (74,'Токио-City',74,1,NULL);
 INSERT INTO "places" VALUES (75,'Чабрец',75,1,NULL);
+INSERT INTO "refresh_tokens" VALUES (1,1,'5e26407b-15b7-4d52-8e50-a09307aff77b','2024-11-14 13:16:30.929855','2024-11-07 13:16:30.930857');
 INSERT INTO "type_of_beers" VALUES (1,'Ржаное пиво',NULL);
 INSERT INTO "type_of_beers" VALUES (2,'Пшеничное пиво',NULL);
 INSERT INTO "type_of_beers" VALUES (3,'Лагер',NULL);
@@ -8985,6 +9031,8 @@ INSERT INTO "type_of_beers" VALUES (36,'Имперский стаут',NULL);
 INSERT INTO "type_of_beers" VALUES (37,'Тропический ИПА',NULL);
 INSERT INTO "type_of_beers" VALUES (38,'Чайное пиво',NULL);
 INSERT INTO "type_of_beers" VALUES (39,'Банановое пиво',NULL);
+INSERT INTO "type_of_places" VALUES (1,'',NULL);
+INSERT INTO "users" VALUES (1,1,'string','froginkrit@gmail.com',NULL,'2024-11-07 13:15:48.401407','string');
 CREATE INDEX IF NOT EXISTS "ix_addresses_city" ON "addresses" (
 	"city"
 );
