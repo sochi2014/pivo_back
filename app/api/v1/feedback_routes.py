@@ -13,7 +13,7 @@ from app.dependencies import get_db
 from app.schemas.feedback_scheme import FeedbackOut, FeedbackCreate
 from app.schemas.photo_scheme import PhotoOut
 from app.schemas.test_scheme import TestOut
-from models import Feedback, Photo
+from models import Feedback, Photo , User,Level
 
 _path_file = pathlib.Path(__file__)
 PREFIX = f'/{_path_file.parent.parent.name}/{_path_file.parent.name}/{_path_file.stem}'
@@ -39,6 +39,32 @@ router = APIRouter(
 #     except Exception as e:
 #         raise HTTPException(status_code=500, detail=f"Error uploading files: {e}")
 
+def update_user_level(user_id: int, db: Session):
+    # Получаем количество отзывов пользователя
+    feedback_count = db.query(Feedback).filter(Feedback.user_id == user_id).count()
+    
+   # Устанавливаем максимальный уровень
+    MAX_LEVEL = 10
+
+    # Считаем новый уровень пользователя (каждые 10 отзывов - новый уровень)
+    new_level_id = min((feedback_count // 10) + 1, MAX_LEVEL)  # Максимум уровень 10  # Пример: за каждые 10 отзывов увеличиваем уровень
+    
+    # Получаем уровень по ID
+    new_level = db.query(Level).filter(Level.id == new_level_id).first()
+    
+    if not new_level:
+        raise HTTPException(status_code=404, detail="Level not found")
+
+    # Обновляем уровень пользователя
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user.level_id = new_level.id
+    db.commit()
+
+    return user
+
 
 @router.post("/create", response_model=FeedbackOut)
 async def create_feedback_route(
@@ -56,6 +82,8 @@ async def create_feedback_route(
         place_id=feedback_data.place_id,
         type_feedback=feedback_data.type_feedback
     )
+
+    update_user_level(feedback_data.user_id, db) 
 
     db.add(feedback)
     db.commit()
