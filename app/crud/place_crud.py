@@ -58,19 +58,20 @@ def get_places(
         if max_rating is not None:
             query = query.having(func.avg(feedback_alias.ratings) <= max_rating)
 
-    column = getattr(Place, sort_by, None)
+    if sort_by:
+        column = getattr(Place, sort_by, None)
 
-    if column is not None:
-        query = query.order_by(asc(column) if order == 'asc' else desc(column))
-    elif sort_by == 'rating':
-        feedback_alias = aliased(Feedback)
-        query = query.outerjoin(feedback_alias, Place.id == feedback_alias.place_id).group_by(Place.id).order_by(
-            asc(func.avg(feedback_alias.ratings)) if order == 'asc' else desc(func.avg(feedback_alias.ratings))
-        )
-    else:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Invalid sort_by value, choose from: {', '.join(VALID_SORT_FIELDS)}"
-        )
+        if column is not None:
+            query = query.order_by(asc(column) if order == 'asc' else desc(column))
+        elif sort_by == 'rating':
+            feedback_alias = aliased(Feedback)
+            query = query.outerjoin(feedback_alias, Place.id == feedback_alias.place_id).group_by(Place.id).order_by(
+                asc(func.avg(feedback_alias.ratings)) if order == 'asc' else desc(func.avg(feedback_alias.ratings))
+            )
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid sort_by value, choose from: {', '.join(VALID_SORT_FIELDS)}"
+            )
 
     return query.offset(skip).limit(limit).all()
