@@ -1,23 +1,29 @@
 # app/crud.py
+import math
 from sqlalchemy.orm import Session
 from models.geoposition import Geoposition
-from schemas.geoposition_sheme import GeopositionCreate
+from app.schemas.geoposition_sheme import GeopositionCreate, GeopositionUpdate
+
 
 def get_geoposition(db: Session, geopos_id: int):
     return db.query(Geoposition).filter(Geoposition.geopos_id == geopos_id).first()
 
+
 def get_geopositions(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Geoposition).offset(skip).limit(limit).all()
 
-def create_geoposition(db: Session, geoposition: GeopositionCreate):
-    db_geoposition = Geoposition(**geoposition.dict())
+
+def create_geoposition(db: Session, geoposition: GeopositionCreate, user_id: int):
+    db_geoposition = Geoposition(**geoposition.dict(), user_id=user_id)
     db.add(db_geoposition)
     db.commit()
     db.refresh(db_geoposition)
     return db_geoposition
 
-def update_geoposition(db: Session, geopos_id: int, geoposition: schemas.GeopositionUpdate):
-    db_geoposition = db.query(Geoposition).filter(Geoposition.geopos_id == geopos_id).first()
+
+def update_geoposition(db: Session, geopos_id: int, geoposition: GeopositionUpdate):
+    db_geoposition = db.query(Geoposition).filter(
+        Geoposition.id == geopos_id).first()
     if db_geoposition is None:
         return None
     for var, value in vars(geoposition).items():
@@ -27,20 +33,22 @@ def update_geoposition(db: Session, geopos_id: int, geoposition: schemas.Geoposi
     db.refresh(db_geoposition)
     return db_geoposition
 
+
 def delete_geoposition(db: Session, geopos_id: int):
-    db_geoposition = db.query(models.Geoposition).filter(models.Geoposition.geopos_id == geopos_id).first()
+    db_geoposition = db.query(Geoposition).filter(
+        Geoposition.id == geopos_id
+    ).first()
     if db_geoposition is None:
         return None
     db.delete(db_geoposition)
     db.commit()
     return db_geoposition
 
-import math
 
 def haversine_formula(lat1, lon1, lat2, lon2):
     """
     Вычисляет расстояние между двумя точками на Земле с использованием формулы Хаверсина.
-    
+
     :param lat1: Широта первой точки в градусах
     :param lon1: Долгота первой точки в градусах
     :param lat2: Широта второй точки в градусах

@@ -1,4 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, DECIMAL
+from sqlalchemy.orm import relationship
+
 from app.database import Base
 
 
@@ -12,3 +14,4 @@ class Address(Base):
     city = Column(String(255), index=True)
     street = Column(String(255), index=True)
     house = Column(String(20), index=True)
+    places = relationship('Place', back_populates='address')
