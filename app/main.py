@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-
+from fastapi.middleware.cors import CORSMiddleware
 from .api.v1 import test_routes, address_routes, auth_routes, users_routes, beer_routes, place_routes, \
     filter_routes, feedback_routes, geoposition_routes
 from .database import engine, Base
@@ -17,3 +17,11 @@ app.include_router(place_routes.router, tags=["place"])
 app.include_router(filter_routes.router, tags=["filters"])
 app.include_router(feedback_routes.router, tags=["feedback"])
 app.include_router(geoposition_routes.router, tags=["geopos"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
