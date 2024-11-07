@@ -11,3 +11,4 @@ from models.beer_color import BeerColor
 from models.test_model import TestModel
 from models.refresh_token import RefreshToken
 from models.photo import Photo
+from models.geoposition import Geoposition
