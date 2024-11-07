@@ -1,8 +1,8 @@
 """initial 07_11_2024
 
-Revision ID: 1f6e44e8a055
+Revision ID: b902be15ed4b
 Revises: 
-Create Date: 2024-11-07 12:36:45.849860
+Create Date: 2024-11-07 13:12:25.343540
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '1f6e44e8a055'
+revision: str = 'b902be15ed4b'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -139,6 +139,15 @@ def upgrade() -> None:
     op.create_index(op.f('ix_feedbacks_beer_id'), 'feedbacks', ['beer_id'], unique=False)
     op.create_index(op.f('ix_feedbacks_place_id'), 'feedbacks', ['place_id'], unique=False)
     op.create_index(op.f('ix_feedbacks_user_id'), 'feedbacks', ['user_id'], unique=False)
+    op.create_table('geopositions',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('latitude', sa.DECIMAL(precision=10, scale=7), nullable=False),
+    sa.Column('longitude', sa.DECIMAL(precision=10, scale=7), nullable=False),
+    sa.Column('updated_at', sa.TIMESTAMP(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('refresh_tokens',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
@@ -183,6 +192,7 @@ def downgrade() -> None:
     op.drop_table('user_friends')
     op.drop_index(op.f('ix_refresh_tokens_id'), table_name='refresh_tokens')
     op.drop_table('refresh_tokens')
+    op.drop_table('geopositions')
     op.drop_index(op.f('ix_feedbacks_user_id'), table_name='feedbacks')
     op.drop_index(op.f('ix_feedbacks_place_id'), table_name='feedbacks')
     op.drop_index(op.f('ix_feedbacks_beer_id'), table_name='feedbacks')
