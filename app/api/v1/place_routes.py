@@ -44,7 +44,7 @@ def read_all_places(
 ):
     places = get_places(
         db=db,
-        skip=skip,
+        skip=offset,
         limit=limit,
         name_filter=name_filter,
         min_rating=min_rating,
