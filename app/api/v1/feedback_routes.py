@@ -105,8 +105,7 @@ async def create_feedback_route(
 def read_feedback(feedback_id: int, db: Session = Depends(get_db)):
     feedback = db.query(Feedback).filter(Feedback.id == feedback_id).first()
     if feedback is None:
-        raise HTTPException(status_code=404, detail=f"Feedback with id {
-                            feedback_id} not found")
+        raise HTTPException(status_code=404, detail=f"Feedback with id {feedback_id} not found")
 
     return feedback
 
