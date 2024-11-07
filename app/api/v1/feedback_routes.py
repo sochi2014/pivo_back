@@ -51,7 +51,8 @@ async def create_feedback_route(
     if feedback_data.type_feedback not in ['beer', 'place']:
         raise HTTPException(status_code=404, detail="Incorrect feedback type")
 
-    user = db.query(User).filter(User.id == feedback_data.user_id).first()
+    user = db.query(User).options(joinedload(User.level)).filter(
+        User.id == feedback_data.user_id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -87,7 +88,6 @@ async def create_feedback_route(
 
     db.commit()
     db.refresh(feedback)
-    
     return FeedbackOut(
         id=feedback.id,
         text=feedback.text,
@@ -105,7 +105,8 @@ async def create_feedback_route(
 def read_feedback(feedback_id: int, db: Session = Depends(get_db)):
     feedback = db.query(Feedback).filter(Feedback.id == feedback_id).first()
     if feedback is None:
-        raise HTTPException(status_code=404, detail=f"Feedback with id {feedback_id} not found")
+        raise HTTPException(status_code=404, detail=f"Feedback with id {
+                            feedback_id} not found")
 
     return feedback
 
@@ -126,10 +127,9 @@ def read_feedbacks(
         joinedload(Feedback.user),
         joinedload(Feedback.photos),
         joinedload(Feedback.beer),
-        joinedload(Feedback.place)
+        joinedload(Feedback.place),
     )
 
-    # Применяем фильтры
     if text:
         query = query.filter(Feedback.text.ilike(f"%{text}%"))
 

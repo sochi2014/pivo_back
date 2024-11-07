@@ -9033,6 +9033,8 @@ INSERT INTO "type_of_beers" VALUES (38,'Чайное пиво',NULL);
 INSERT INTO "type_of_beers" VALUES (39,'Банановое пиво',NULL);
 INSERT INTO "type_of_places" VALUES (1,'',NULL);
 INSERT INTO "users" VALUES (1,1,'string','froginkrit@gmail.com',NULL,'2024-11-07 13:15:48.401407','string');
+INSERT INTO levels (id, level_name, icon)
+VALUES (1, 'Работяга', 'https://drive.google.com/u/0/driveviewer/AKGpihamMHY6OSkAMkhYdCp1zKsibVYHZDk50M90QEEJLyALoWIwLlZug14O5rZM1lVxPMJePCLXDGjIGEHvLN_HG3oEvq-3RmfUMg=s1600-rw-v1');
 CREATE INDEX IF NOT EXISTS "ix_addresses_city" ON "addresses" (
 	"city"
 );

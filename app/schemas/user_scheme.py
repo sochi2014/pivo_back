@@ -30,7 +30,7 @@ class UserReturnSchema(BaseModel):
     username: str
     email: str
     phone_number: Optional[str]
-    level: Optional[LevelSchema]
+    level: LevelSchema
 
     class Config:
         orm_mode = True
