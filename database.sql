@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS "auth_codes" (
 	PRIMARY KEY("id"),
 	FOREIGN KEY("user_id") REFERENCES "users"("id")
 );
+INSERT INTO auth_codes VALUES(1,4,'727323','2024-11-07 20:00:36.080268','2024-11-07 19:45:36.097877');
 CREATE TABLE IF NOT EXISTS "beer_colors" (
 	"id"	INTEGER NOT NULL,
 	"name"	VARCHAR(50) NOT NULL,
@@ -87,6 +88,10 @@ CREATE TABLE IF NOT EXISTS "photos" (
 	FOREIGN KEY("feedback_id") REFERENCES "feedbacks"("id"),
 	FOREIGN KEY("place_id") REFERENCES "places"("id")
 );
+INSERT INTO "photos" VALUES(1,'string',NULL,35,NULL);
+INSERT INTO "photos" VALUES(2,'string',NULL,36,NULL);
+INSERT INTO "photos" VALUES(3,'string',NULL,37,NULL);
+INSERT INTO "photos" VALUES(4,'string',NULL,38,NULL);
 CREATE TABLE IF NOT EXISTS "places" (
 	"id"	INTEGER NOT NULL,
 	"name"	VARCHAR(100),
@@ -8916,6 +8921,12 @@ INSERT INTO "feedbacks" VALUES (31,'Заведение для особых сл�
 INSERT INTO "feedbacks" VALUES (32,'Пиво средней крепости, подходит для вечера',4,1,22,28,'beer',NULL);
 INSERT INTO "feedbacks" VALUES (33,'Чистый, свежий вкус',5,1,23,29,'beer',NULL);
 INSERT INTO "feedbacks" VALUES (34,'Немного суховато',3,1,24,30,'place',NULL);
+INSERT INTO "feedbacks" VALUES(35,'string',1,1,1,1,'beer',NULL);
+INSERT INTO "feedbacks" VALUES(36,'string',1,1,1,1,'beer',NULL);
+INSERT INTO "feedbacks" VALUES(37,'string',1,1,1,1,'beer',NULL);
+INSERT INTO "feedbacks" VALUES(38,'string',1,1,1,1,'beer',NULL);
+INSERT INTO "feedbacks" VALUES(39,'фвыфвыв',1,2,1,NULL,'beer',NULL);
+INSERT INTO "feedbacks" VALUES(40,'adfkdsjbfksbfkjsadfksd,d',9,2,1,NULL,'beer',NULL);
 INSERT INTO "places" VALUES (1,'Gusti Giusti, ресторан',1,1,NULL);
 INSERT INTO "places" VALUES (2,'Italica, ресторан',2,1,NULL);
 INSERT INTO "places" VALUES (3,'Wine&Dine, авторский бар',3,1,NULL);
@@ -8991,7 +9002,12 @@ INSERT INTO "places" VALUES (72,'Лодейнопольская улица, 8',7
 INSERT INTO "places" VALUES (73,'Umami',73,1,NULL);
 INSERT INTO "places" VALUES (74,'Токио-City',74,1,NULL);
 INSERT INTO "places" VALUES (75,'Чабрец',75,1,NULL);
-INSERT INTO "refresh_tokens" VALUES (1,1,'5e26407b-15b7-4d52-8e50-a09307aff77b','2024-11-14 13:16:30.929855','2024-11-07 13:16:30.930857');
+INSERT INTO "refresh_tokens" VALUES(1,1,'5e26407b-15b7-4d52-8e50-a09307aff77b','2024-11-14 13:16:30.929855','2024-11-07 13:16:30.930857');
+INSERT INTO "refresh_tokens" VALUES(2,2,'43d05a1e-4b0b-4759-9cda-89524ca33025','2024-11-14 14:52:48.448180','2024-11-07 14:52:48.466184');
+INSERT INTO "refresh_tokens" VALUES(3,2,'d3f425bc-6abd-43ea-939f-52b77bb30e4e','2024-11-14 18:18:00.013131','2024-11-07 18:18:00.205245');
+INSERT INTO "refresh_tokens" VALUES(4,2,'5c2336f3-489f-4d04-adc4-a1b5a4caeb19','2024-11-14 18:21:57.524240','2024-11-07 18:21:57.524714');
+INSERT INTO "refresh_tokens" VALUES(5,2,'c9e8e3a7-3710-4eff-858e-a312fcf18148','2024-11-14 18:54:56.038217','2024-11-07 18:54:56.039543');
+INSERT INTO "refresh_tokens" VALUES(6,3,'58a95fbe-9460-45f2-9db6-497cb633c6f7','2024-11-14 19:40:30.494860','2024-11-07 19:40:30.496159');
 INSERT INTO "type_of_beers" VALUES (1,'Ржаное пиво',NULL);
 INSERT INTO "type_of_beers" VALUES (2,'Пшеничное пиво',NULL);
 INSERT INTO "type_of_beers" VALUES (3,'Лагер',NULL);
@@ -9033,13 +9049,14 @@ INSERT INTO "type_of_beers" VALUES (38,'Чайное пиво',NULL);
 INSERT INTO "type_of_beers" VALUES (39,'Банановое пиво',NULL);
 INSERT INTO "type_of_places" VALUES (1,'',NULL);
 INSERT INTO "users" VALUES (1,1,'string','froginkrit@gmail.com',NULL,'2024-11-07 13:15:48.401407','string');
-INSERT INTO levels (id, level_name, icon)
-VALUES 
-(1, 'Скуф', 'api.secondmansite.ru/static/images/1'),
-(2, 'Пивной бродяга', 'api.secondmansite.ru/static/images/2'),
-(3, 'Хмельной эксперт', 'api.secondmansite.ru/static/images/3'),
-(4, 'Пивной философ', 'api.secondmansite.ru/static/images/4'),
-(5, 'Пивной грандмастер', 'api.secondmansite.ru/static/images/5');
+INSERT INTO "users" VALUES(3,1,'Dimka','dima.krasilnikoff@gmail.com',NULL,'2024-11-07 19:39:11.218230','string');
+INSERT INTO "users" VALUES(2,1,'netos23','nikmoroz2002@yandex.ru',NULL,'2024-11-07 14:52:29.902069',NULL);
+INSERT INTO "users" VALUES(4,1,'string','user@example.com',NULL,'2024-11-07 19:45:35.919793','string');
+INSERT INTO "levels" (1, 'Скуф', 'api.secondmansite.ru/static/images/1');
+INSERT INTO "levels" (2, 'Пивной бродяга', 'api.secondmansite.ru/static/images/2');
+INSERT INTO "levels" (3, 'Хмельной эксперт', 'api.secondmansite.ru/static/images/3');
+INSERT INTO "levels" (4, 'Пивной философ', 'api.secondmansite.ru/static/images/4');
+INSERT INTO "levels" (5, 'Пивной грандмастер', 'api.secondmansite.ru/static/images/5');
 CREATE INDEX IF NOT EXISTS "ix_addresses_city" ON "addresses" (
 	"city"
 );
