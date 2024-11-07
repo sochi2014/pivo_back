@@ -7,7 +7,7 @@ class BeerOut(BaseModel):
     id: int
     name: str
     brand: str
-    type_name: str
+    type_name: Optional[str] = None
     alc_degree: float
     color_name: Optional[str] = None
     description: Optional[str] = None
