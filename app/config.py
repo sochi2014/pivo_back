@@ -1,3 +1,4 @@
+import os
 from functools import lru_cache
 
 from pydantic import computed_field
@@ -34,3 +35,6 @@ def get_settings():
 
 
 settings = get_settings()
+
+# UPLOAD_FOLDER = "static/uploads"
+# os.makedirs(UPLOAD_FOLDER, exist_ok=True)

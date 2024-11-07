@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from typing import Optional, List
-from app.crud.place_crud import create_place, get_place
+from app.crud.place_crud import create_place, get_place, get_places
 from app.schemas.place_scheme import PlaceCreate, PlaceUpdate, PlaceOut
 from app.dependencies import get_db
+from models import Feedback
 from models.place import Place
 from app.schemas.address_scheme import AddressOut
 import pathlib
@@ -15,64 +17,67 @@ router = APIRouter(
     prefix=PREFIX
 )
 
+def convert_place_to_placeout(place: Place, db: Session) -> PlaceOut:
+    average_rating = db.query(func.avg(Feedback.ratings)).filter(Feedback.place_id == place.id).scalar()
+    average_rating = round(average_rating) if average_rating is not None else None
 
-# @router.post("/", response_model=PlaceOut)
-# def create_place_route(place: PlaceCreate, db: Session = Depends(get_db)):
-#     return create_place(db=db, place=place)
+    return PlaceOut(
+        id=place.id,
+        name=place.name,
+        type_place_id=place.type_place_id,
+        phone_number=place.phone_number,
+        address=AddressOut.from_orm(place.address) if place.address else None,
+        rating=average_rating
+    )
 
 
-@router.get("/filter", response_model=List[PlaceOut])
+@router.get("", response_model=List[PlaceOut])
 def read_all_places(
     skip: int = 0,
     limit: int = 10,
     name_filter: Optional[str] = None,
-    type_place_id: Optional[int] = None,
+    min_rating: Optional[float] = None,
+    max_rating: Optional[float] = None,
+    sort_by: Optional[str] = None,
+    order: str = 'asc',
     db: Session = Depends(get_db)
 ):
-    query = db.query(Place).join(Place.address)
-
-    if name_filter:
-        query = query.filter(Place.name.ilike(f"%{name_filter}%"))
-    if type_place_id:
-        query = query.filter(Place.type_place_id == type_place_id)
-
-    places = query.offset(skip).limit(limit).all()
-
+    places = get_places(
+        db=db,
+        skip=skip,
+        limit=limit,
+        name_filter=name_filter,
+        min_rating=min_rating,
+        max_rating=max_rating,
+        sort_by=sort_by,
+        order=order
+    )
     if not places:
         raise HTTPException(status_code=404, detail="No places found")
 
-    return [
-        PlaceOut(
-            id=place.id,
-            name=place.name,
-            type_place_id=place.type_place_id,
-            phone_number=place.phone_number,
-            address=AddressOut.from_orm(
-                place.address) if place.address else None
-        ) for place in places
-    ]
+    return [convert_place_to_placeout(place, db) for place in places]
 
 
-@router.get("/", response_model=List[PlaceOut])
-def read_places(offset: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    query = db.query(Place).offset(offset).limit(limit)
-
-    places = query.all()
-
-    if not places:
-        raise HTTPException(status_code=404, detail="No places found")
-
-    return [
-        PlaceOut(
-            id=place.id,
-            name=place.name,
-            type_place_id=place.type_place_id,
-            phone_number=place.phone_number,
-            address=AddressOut.from_orm(
-                place.address) if place.address else None
-        )
-        for place in places
-    ]
+# @router.get("/", response_model=List[PlaceOut])
+# def read_places(offset: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+#     query = db.query(Place).offset(offset).limit(limit)
+#
+#     places = query.all()
+#
+#     if not places:
+#         raise HTTPException(status_code=404, detail="No places found")
+#
+#     return [
+#         PlaceOut(
+#             id=place.id,
+#             name=place.name,
+#             type_place_id=place.type_place_id,
+#             phone_number=place.phone_number,
+#             address=AddressOut.from_orm(
+#                 place.address) if place.address else None
+#         )
+#         for place in places
+#     ]
 
 
 # @router.put("/{place_id}", response_model=PlaceOut)
