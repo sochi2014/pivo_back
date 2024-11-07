@@ -7,8 +7,8 @@ from app.schemas.user_scheme import UserUpdate, UserReturnSchema
 from app.schemas.level_scheme import LevelSchema
 from typing import Annotated
 from models.level import Level
+from models.user import User
 import pathlib
-
 _path_file = pathlib.Path(__file__)
 PREFIX = f'/{_path_file.parent.parent.name}/{_path_file.parent.name}/{_path_file.stem}'
 
@@ -20,29 +20,27 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 @router.get("/me", response_model=UserReturnSchema)
-def get_me(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):
+def get_me(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     """
     Получает данные текущего аутентифицированного пользователя.
     """
-    user = get_current_user(token, db)
-    if not user:
+    if not current_user:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access forbidden: user not authenticated"
         )
-    return user
+    return current_user
 
 
 @router.put("/me", response_model=UserReturnSchema)
 def update_me(
     user_update: UserUpdate,
-    token: Annotated[str, Depends(oauth2_scheme)],
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """
     Обновляет данные текущего аутентифицированного пользователя, включая уровень и URL аватарки.
     """
-    current_user = get_current_user(token, db)
     if not current_user:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

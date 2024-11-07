@@ -117,10 +117,14 @@ def read_feedbacks(
         query = query.filter(Feedback.type_feedback == type_feedback)
 
     if sort_by:
-        if sort_order == "asc":
-            query = query.order_by(getattr(Feedback, sort_by).asc())
-        else:
-            query = query.order_by(getattr(Feedback, sort_by).desc())
+        try:
+            if sort_order == "asc":
+                query = query.order_by(getattr(Feedback, sort_by).asc())
+            else:
+                query = query.order_by(getattr(Feedback, sort_by).desc())
+        except (AttributeError, NotImplementedError):
+            raise HTTPException(status_code=404,
+                                detail="Incorrect sort type, choose from: id, text, ratings, user_id, beer_id, place_id, type_feedback")
 
     feedbacks = query.offset(offset).limit(limit).all()
 

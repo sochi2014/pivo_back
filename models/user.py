@@ -24,7 +24,8 @@ class User(Base):
     phone_number = Column(String)
     level = relationship("Level", back_populates="users")
     auth_codes = relationship("AuthCode", back_populates="user")
-    refresh_tokens = relationship("RefreshToken", back_populates="user", cascade="all, delete-orphan")
+    refresh_tokens = relationship(
+        "RefreshToken", back_populates="user", cascade="all, delete-orphan")
     feedbacks = relationship('Feedback', back_populates='user')
     friends = relationship(
         'User',
@@ -33,3 +34,6 @@ class User(Base):
         secondaryjoin=id == user_friends.c.friend_id,
         backref='added_by'
     )
+    geoposition = relationship(
+        "Geoposition", back_populates="user", uselist=False)
+    
