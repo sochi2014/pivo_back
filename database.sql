@@ -9052,11 +9052,11 @@ INSERT INTO "users" VALUES (1,1,'string','froginkrit@gmail.com',NULL,'2024-11-07
 INSERT INTO "users" VALUES(3,1,'Dimka','dima.krasilnikoff@gmail.com',NULL,'2024-11-07 19:39:11.218230','string');
 INSERT INTO "users" VALUES(2,1,'netos23','nikmoroz2002@yandex.ru',NULL,'2024-11-07 14:52:29.902069',NULL);
 INSERT INTO "users" VALUES(4,1,'string','user@example.com',NULL,'2024-11-07 19:45:35.919793','string');
-INSERT INTO "levels" (1, 'Скуф', 'api.secondmansite.ru/static/images/1');
-INSERT INTO "levels" (2, 'Пивной бродяга', 'api.secondmansite.ru/static/images/2');
-INSERT INTO "levels" (3, 'Хмельной эксперт', 'api.secondmansite.ru/static/images/3');
-INSERT INTO "levels" (4, 'Пивной философ', 'api.secondmansite.ru/static/images/4');
-INSERT INTO "levels" (5, 'Пивной грандмастер', 'api.secondmansite.ru/static/images/5');
+INSERT INTO "levels" VALUES(1, 'Скуф', 'api.secondmansite.ru/static/images/1.png');
+INSERT INTO "levels" VALUES(2, 'Пивной бродяга', 'api.secondmansite.ru/static/images/2.png');
+INSERT INTO "levels" VALUES(3, 'Хмельной эксперт', 'api.secondmansite.ru/static/images/3.png');
+INSERT INTO "levels" VALUES(4, 'Пивной философ', 'api.secondmansite.ru/static/images/4.png');
+INSERT INTO "levels" VALUES(5, 'Пивной грандмастер', 'api.secondmansite.ru/static/images/5.png');
 CREATE INDEX IF NOT EXISTS "ix_addresses_city" ON "addresses" (
 	"city"
 );
