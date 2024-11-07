@@ -46,6 +46,9 @@ async def create_feedback_route(
         feedback_data: FeedbackCreate,
         db: Session = Depends(get_db)
 ):
+    if feedback_data.type_feedback not in ['beer', 'place']:
+        raise HTTPException(status_code=404, detail="Incorrect feedback type")
+
     feedback = Feedback(
         text=feedback_data.text,
         ratings=feedback_data.ratings,
@@ -110,6 +113,8 @@ def read_feedbacks(
         query = query.filter(Feedback.ratings <= ratings_max)
 
     if type_feedback:
+        if type_feedback not in ['beer', 'place']:
+            raise HTTPException(status_code=404, detail="Incorrect feedback type")
         query = query.filter(Feedback.type_feedback == type_feedback)
 
     if sort_by:

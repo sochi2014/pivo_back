@@ -1,10 +1,10 @@
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel
 from typing import Optional, List
 
 
 class PhotoOut(BaseModel):
     id: int
-    photo_url: HttpUrl
+    photo_url: str
 
     class Config:
         from_attributes = True
