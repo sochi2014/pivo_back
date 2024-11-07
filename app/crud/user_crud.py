@@ -33,7 +33,7 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session 
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="User not found",
+            detail="User not autorized",
         )
     return user
 
