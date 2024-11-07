@@ -4,6 +4,10 @@ from sqlalchemy.orm import Session
 from app.dependencies import get_db
 from app.crud.token_crud import decode_access_token
 from app.schemas.user_scheme import UserUpdate
+from fastapi.security import OAuth2PasswordBearer
+from typing import Annotated
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 def create_user(email: str, username: str = None, avatar_url: str = None, db: Session = Depends(get_db)) -> User:
@@ -23,13 +27,13 @@ def get_user_by_email(email: str, db: Session) -> User:
     return user
 
 
-def get_current_user(token: str, db: Session = Depends(get_db)):
+def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):
     user_id = decode_access_token(token)
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User not autorized",
         )
     return user
 
