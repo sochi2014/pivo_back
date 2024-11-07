@@ -45,18 +45,7 @@ async def register_user(data: RegistrationSchema, db: Session = Depends(get_db))
     db.commit()
     db.refresh(new_user)
 
-    code = generate_auth_code()
-    expires_at = datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
-
-    auth_code = AuthCode(
-        code=code,
-        expires_at=expires_at,
-        user_id=new_user.id
-    )
-    db.add(auth_code)
-    db.commit()
-
-    send_email(data.email, code)
+    send_auth_code(new_user, db)
 
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,

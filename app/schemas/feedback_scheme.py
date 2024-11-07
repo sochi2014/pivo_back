@@ -5,12 +5,12 @@ from app.schemas.user_scheme import UserReturnSchema
 from app.schemas.photo_scheme import PhotoOut
 from app.schemas.beer_schemas import BeerOut
 from app.schemas.place_scheme import PlaceOut
+from fastapi.security import OAuth2PasswordBearer
 
 
 class FeedbackCreate(BaseModel):
     text: Optional[str]
     ratings: int
-    user_id: int
     beer_id: Optional[int] = None
     place_id: Optional[int] = None
     type_feedback: str
