@@ -5,30 +5,9 @@ from models.geoposition import Geoposition
 from app.schemas.geoposition_sheme import GeopositionCreate, GeopositionUpdate
 
 
-def get_geoposition(db: Session, geopos_id: int):
-    return db.query(Geoposition).filter(Geoposition.geopos_id == geopos_id).first()
-
-
-def get_geopositions(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Geoposition).offset(skip).limit(limit).all()
-
-
 def create_geoposition(db: Session, geoposition: GeopositionCreate, user_id: int):
     db_geoposition = Geoposition(**geoposition.dict(), user_id=user_id)
     db.add(db_geoposition)
-    db.commit()
-    db.refresh(db_geoposition)
-    return db_geoposition
-
-
-def update_geoposition(db: Session, geopos_id: int, geoposition: GeopositionUpdate):
-    db_geoposition = db.query(Geoposition).filter(
-        Geoposition.id == geopos_id).first()
-    if db_geoposition is None:
-        return None
-    for var, value in vars(geoposition).items():
-        if value is not None:
-            setattr(db_geoposition, var, value)
     db.commit()
     db.refresh(db_geoposition)
     return db_geoposition
