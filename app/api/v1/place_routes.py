@@ -33,7 +33,7 @@ def convert_place_to_placeout(place: Place, db: Session) -> PlaceOut:
 
 @router.get("", response_model=List[PlaceOut])
 def read_all_places(
-    skip: int = 0,
+    offset: int = 0,
     limit: int = 10,
     name_filter: Optional[str] = None,
     min_rating: Optional[float] = None,
@@ -44,7 +44,7 @@ def read_all_places(
 ):
     places = get_places(
         db=db,
-        skip=skip,
+        skip=offset,
         limit=limit,
         name_filter=name_filter,
         min_rating=min_rating,
