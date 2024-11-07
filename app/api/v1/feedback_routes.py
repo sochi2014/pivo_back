@@ -2,12 +2,11 @@ import os
 import pathlib
 from typing import List, Optional
 from uuid import uuid4
-
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from pydantic import BaseModel
 from sqlalchemy.orm import Session, joinedload
 
-
+from app.crud.level_crud import update_user_level
 from app.crud.user_crud import get_current_user
 from app.dependencies import get_db
 from app.schemas.feedback_scheme import FeedbackOut, FeedbackCreate
@@ -76,6 +75,8 @@ async def create_feedback_route(
     db.add(feedback)
     db.commit()
     db.refresh(feedback)
+
+    update_user_level(current_user.id, db)
 
     for url in feedback_data.photo_urls:
         photo = Photo(photo_url=url, feedback_id=feedback.id)

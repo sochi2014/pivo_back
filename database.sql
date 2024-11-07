@@ -9034,7 +9034,12 @@ INSERT INTO "type_of_beers" VALUES (39,'Банановое пиво',NULL);
 INSERT INTO "type_of_places" VALUES (1,'',NULL);
 INSERT INTO "users" VALUES (1,1,'string','froginkrit@gmail.com',NULL,'2024-11-07 13:15:48.401407','string');
 INSERT INTO levels (id, level_name, icon)
-VALUES (1, 'Работяга', 'https://drive.google.com/u/0/driveviewer/AKGpihamMHY6OSkAMkhYdCp1zKsibVYHZDk50M90QEEJLyALoWIwLlZug14O5rZM1lVxPMJePCLXDGjIGEHvLN_HG3oEvq-3RmfUMg=s1600-rw-v1');
+VALUES 
+(1, 'Скуф', 'api.secondmansite.ru/static/images/1'),
+(2, 'Пивной бродяга', 'api.secondmansite.ru/static/images/2'),
+(3, 'Хмельной эксперт', 'api.secondmansite.ru/static/images/3'),
+(4, 'Пивной философ', 'api.secondmansite.ru/static/images/4'),
+(5, 'Пивной грандмастер', 'api.secondmansite.ru/static/images/5');
 CREATE INDEX IF NOT EXISTS "ix_addresses_city" ON "addresses" (
 	"city"
 );
