@@ -59,7 +59,7 @@ def filter_addresses(
     return [convert_address_to_addressout(address) for address in addresses]
 
 
-@router.get("/", response_model=List[AddressOut])
+@router.get("", response_model=List[AddressOut])
 def read_addresses(offset: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     addresses = db.query(Address).offset(offset).limit(limit).all()
     if not addresses:

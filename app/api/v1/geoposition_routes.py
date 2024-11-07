@@ -22,7 +22,7 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=GeopositionOut, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=GeopositionOut, status_code=status.HTTP_201_CREATED)
 def create_geoposition_endpoint(
     geoposition: GeopositionCreate,
     db: Session = Depends(get_db),
@@ -36,7 +36,7 @@ def create_geoposition_endpoint(
     return new_geoposition
 
 
-@router.get("/", response_model=GeopositionOut)
+@router.get("", response_model=GeopositionOut)
 def read_geoposition_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -48,7 +48,7 @@ def read_geoposition_endpoint(
     return geoposition
 
 
-@router.put("/", response_model=GeopositionOut)
+@router.put("", response_model=GeopositionOut)
 def update_geoposition_endpoint(
     geoposition: GeopositionUpdate,
     db: Session = Depends(get_db),
@@ -63,7 +63,7 @@ def update_geoposition_endpoint(
     return updated_geoposition
 
 
-@router.delete("/", response_model=GeopositionOut)
+@router.delete("", response_model=GeopositionOut)
 def delete_geoposition_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)

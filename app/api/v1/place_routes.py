@@ -58,7 +58,7 @@ def read_all_places(
     return [convert_place_to_placeout(place, db) for place in places]
 
 
-# @router.get("/", response_model=List[PlaceOut])
+# @router.get("", response_model=List[PlaceOut])
 # def read_places(offset: int = 0, limit: int = 10, db: Session = Depends(get_db)):
 #     query = db.query(Place).offset(offset).limit(limit)
 #
