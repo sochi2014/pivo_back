@@ -8,7 +8,6 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app import config
-from app.config import UPLOAD_FOLDER
 from app.crud.test_crud import get_test_db, get_tests_db
 from app.dependencies import get_db
 from app.schemas.feedback_scheme import FeedbackOut, FeedbackCreate
