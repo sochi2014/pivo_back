@@ -4,8 +4,7 @@ from app.dependencies import get_db
 from models.user import User
 from app.schemas.geoposition_sheme import GeopositionBase, GeopositionCreate, \
     GeopositionOut, GeopositionUpdate
-from app.crud.geoposition_crud import delete_geoposition, create_geoposition, \
-    get_geoposition, get_geopositions, update_geoposition
+from app.crud.geoposition_crud import delete_geoposition, create_geoposition
 from app.crud.user_crud import get_current_user
 from models.geoposition import Geoposition
 from app.schemas.usergeo_sheme import UserGeoOut
@@ -28,53 +27,16 @@ def create_geoposition_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    existing_geoposition = current_user.geoposition
+    if existing_geoposition is not None:
+        delete_geoposition(db, geopos_id=existing_geoposition.id)
+
     new_geoposition = create_geoposition(
         db=db,
         geoposition=geoposition,
         user_id=current_user.id
     )
     return new_geoposition
-
-
-@router.get("", response_model=GeopositionOut)
-def read_geoposition_endpoint(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    geoposition = current_user.geoposition
-    if geoposition is None:
-        raise HTTPException(status_code=404, detail="Geoposition not found")
-
-    return geoposition
-
-
-@router.put("", response_model=GeopositionOut)
-def update_geoposition_endpoint(
-    geoposition: GeopositionUpdate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    existing_geoposition = current_user.geoposition
-    if existing_geoposition is None:
-        raise HTTPException(status_code=404, detail="Geoposition not found")
-
-    updated_geoposition = update_geoposition(
-        db, geopos_id=existing_geoposition.id, geoposition=geoposition)
-    return updated_geoposition
-
-
-@router.delete("", response_model=GeopositionOut)
-def delete_geoposition_endpoint(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    existing_geoposition = current_user.geoposition
-    if existing_geoposition is None:
-        raise HTTPException(status_code=404, detail="Geoposition not found")
-
-    deleted_geoposition = delete_geoposition(
-        db, geopos_id=existing_geoposition.id)
-    return deleted_geoposition
 
 
 @router.get("/users/nearby", response_model=List[UserGeoOut])
