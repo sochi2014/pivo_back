@@ -7,12 +7,11 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from pydantic import BaseModel
 from sqlalchemy.orm import Session, joinedload
 
-from app import config
-from app.crud.test_crud import get_test_db, get_tests_db
+
+from app.crud.user_crud import get_current_user
 from app.dependencies import get_db
 from app.schemas.feedback_scheme import FeedbackOut, FeedbackCreate
 from app.schemas.photo_scheme import PhotoOut
-from app.schemas.test_scheme import TestOut
 from app.schemas.beer_schemas import BeerOut
 from app.schemas.place_scheme import PlaceOut
 from app.schemas.user_scheme import UserReturnSchema
@@ -45,16 +44,12 @@ router = APIRouter(
 @router.post("/create", response_model=FeedbackOut)
 async def create_feedback_route(
         feedback_data: FeedbackCreate,
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
 ):
 
     if feedback_data.type_feedback not in ['beer', 'place']:
         raise HTTPException(status_code=404, detail="Incorrect feedback type")
-
-    user = db.query(User).options(joinedload(User.level)).filter(
-        User.id == feedback_data.user_id).first()
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
 
     place = None
     if feedback_data.place_id:
@@ -72,8 +67,8 @@ async def create_feedback_route(
     feedback = Feedback(
         text=feedback_data.text,
         ratings=feedback_data.ratings,
-        user_id=user.id,
         beer_id=beer.id if beer else None,
+        user_id=current_user.id,
         place_id=place.id if place else None,
         type_feedback=feedback_data.type_feedback
     )
@@ -95,7 +90,7 @@ async def create_feedback_route(
         type_feedback=feedback.type_feedback,
         photos=[PhotoOut(id=photo.id, photo_url=photo.photo_url)
                 for photo in feedback.photos],
-        user=UserReturnSchema.from_orm(user),
+        user=UserReturnSchema.from_orm(current_user),
         beer=BeerOut.from_orm(beer) if beer else None,
         place=PlaceOut.from_orm(place) if place else None
     )
@@ -105,7 +100,8 @@ async def create_feedback_route(
 def read_feedback(feedback_id: int, db: Session = Depends(get_db)):
     feedback = db.query(Feedback).filter(Feedback.id == feedback_id).first()
     if feedback is None:
-        raise HTTPException(status_code=404, detail=f"Feedback with id {feedback_id} not found")
+        raise HTTPException(status_code=404, detail=f"Feedback with id {
+                            feedback_id} not found")
 
     return feedback
 
