@@ -29,6 +29,7 @@ class UserReturnSchema(BaseModel):
     id: int
     username: str
     email: str
+    avatar_url: Optional[str]
     phone_number: Optional[str]
     level: LevelSchema
 

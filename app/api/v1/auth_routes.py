@@ -37,6 +37,7 @@ async def register_user(data: RegistrationSchema, db: Session = Depends(get_db))
     new_user = User(
         email=data.email,
         username=data.username,
+        avatar_url=data.avatar_url,
         phone_number=data.phone_number if data.phone_number else None,
         level_id=1,
         register_at=datetime.datetime.utcnow()
