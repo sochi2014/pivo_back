@@ -2,7 +2,7 @@ from pydantic import BaseModel, condecimal
 from typing import Optional
 
 
-class AddressOut(BaseModel):
+class AddressBase(BaseModel):
     id: int
     latitude: condecimal(max_digits=10, decimal_places=7)
     longitude: condecimal(max_digits=10, decimal_places=7)
@@ -10,6 +10,13 @@ class AddressOut(BaseModel):
     city: str
     street: str
     house: str
+
+    class Config:
+        orm_mode = True
+        from_attributes = True
+
+
+class AddressOut(AddressBase):
     place_id: Optional[int] = None
 
     class Config:

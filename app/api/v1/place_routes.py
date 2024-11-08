@@ -7,7 +7,7 @@ from app.schemas.place_scheme import PlaceCreate, PlaceUpdate, PlaceOut
 from app.dependencies import get_db
 from models import Feedback
 from models.place import Place
-from app.schemas.address_scheme import AddressOut
+from app.schemas.address_scheme import AddressBase
 import pathlib
 
 _path_file = pathlib.Path(__file__)
@@ -20,13 +20,12 @@ router = APIRouter(
 def convert_place_to_placeout(place: Place, db: Session) -> PlaceOut:
     average_rating = db.query(func.avg(Feedback.ratings)).filter(Feedback.place_id == place.id).scalar()
     average_rating = round(average_rating) if average_rating is not None else None
-
     return PlaceOut(
         id=place.id,
         name=place.name,
         type_place_id=place.type_place_id,
         phone_number=place.phone_number,
-        address=AddressOut.from_orm(place.address) if place.address else None,
+        address=AddressBase.from_orm(place.address) if place.address else None,
         rating=average_rating
     )
 
@@ -97,11 +96,10 @@ def read_place(place_id: int, db: Session = Depends(get_db)):
     if place is None:
         raise HTTPException(status_code=404,
                             detail=f"Place with id {place_id} not found")
-
     return PlaceOut(
         id=place.id,
         name=place.name,
         type_place_id=place.type_place_id,
         phone_number=place.phone_number,
-        address=AddressOut.from_orm(place.address) if place.address else None
+        address=AddressBase.from_orm(place.address) if place.address else None
     )

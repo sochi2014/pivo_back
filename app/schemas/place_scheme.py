@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel
 from typing import Optional
-from app.schemas.address_scheme import AddressOut
+from app.schemas.address_scheme import AddressBase
 
 
 class PlaceCreate(BaseModel):
@@ -26,7 +26,7 @@ class PlaceOut(BaseModel):
     type_place_id: int
     phone_number: Optional[str] = None
     address_id: Optional[int] = None
-    address: Optional[AddressOut]
+    address: Optional[AddressBase]
     rating: Optional[int] = None
 
     class Config:
