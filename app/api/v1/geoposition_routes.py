@@ -45,6 +45,9 @@ def find_users_nearby(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if not current_user.geoposition:
+        raise HTTPException(
+            status_code=400, detail="User's location is not set")
     current_lat = float(current_user.geoposition.latitude)
     current_lon = float(current_user.geoposition.longitude)
 
@@ -57,7 +60,7 @@ def find_users_nearby(
     max_lon = current_lon + lon_change
 
     one_minute_ago = datetime.utcnow() - timedelta(minutes=1)
-    
+
     users_in_box = db.query(User).join(Geoposition).filter(
         Geoposition.latitude.between(min_lat, max_lat),
         Geoposition.longitude.between(min_lon, max_lon),
