@@ -17,7 +17,7 @@ def send_email(to_email: str, code: str):
     msg.attach(MIMEText(body, 'plain'))
 
     try:
-        server = smtplib.SMTP('smtp.mailersend.net', 587)
+        server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
         server.login(from_email, from_password)
 
