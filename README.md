@@ -76,4 +76,6 @@ http://127.0.0.1:8000/docs
    deploy.sh
     ```
 
-PS. [API](https://api.secondmansite.ru/docs) доступно
+PS. [API](https://api.secondmansite.ru/docs) доступно \
+PPS. [Презентация пдф](https://drive.google.com/file/d/1J_Ub9y_yVkvY0QaWuQ0YlvBvPc5lvjnV/view?usp=sharing) \
+PPS. [Презентация пптх](https://docs.google.com/presentation/d/19hyUFwd_cZDxeCFgi-tXrFrI4cxzA0FW/edit?usp=sharing&ouid=108248758496360302231&rtpof=true&sd=true)
